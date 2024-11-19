@@ -56,7 +56,7 @@ function CreateCabinForm() {
     formState: { errors },
   } = useForm();
   const queryClient = useQueryClient();
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending: isCreating } = useMutation({
     mutationFn: createCabin,
     onSuccess: () => {
       toast.success("Cabin created successfully");
@@ -69,7 +69,8 @@ function CreateCabinForm() {
   });
 
   function onSubmit(data) {
-    mutate(data);
+    // console.log(data);
+    mutate({ ...data, image: data.image[0] });
   }
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
@@ -85,6 +86,7 @@ function CreateCabinForm() {
         <Input
           type="number"
           id="maxCapacity"
+          disabled={isCreating}
           {...register("maxCapacity", {
             required: "this field is required",
             min: {
@@ -99,6 +101,7 @@ function CreateCabinForm() {
         <Input
           type="number"
           id="regularPrice"
+          disabled={isCreating}
           {...register("regularPrice", {
             required: "this field is required",
             min: {
@@ -113,12 +116,13 @@ function CreateCabinForm() {
         <Input
           type="number"
           id="discount"
+          disabled={isCreating}
           defaultValue={0}
           {...register("discount", {
             required: "this field is required",
             //custom validate function
             validate: (value) =>
-              value <= getValues().regularPrice ||
+              +value <= +getValues().regularPrice ||
               "Discount should be less than regular price",
           })}
         />
@@ -131,13 +135,18 @@ function CreateCabinForm() {
         <Textarea
           type="number"
           id="description"
+          disabled={isCreating}
           defaultValue=""
           {...register("description", { required: "this field is required" })}
         />
       </FormRow>
 
       <FormRow label="Image" error={errors?.image?.message}>
-        <FileInput id="image" accept="image/*" />
+        <FileInput
+          id="image"
+          accept="image/*"
+          {...register("image", { required: "this field is required" })}
+        />
       </FormRow>
 
       <FormRow>
@@ -145,7 +154,7 @@ function CreateCabinForm() {
         <Button variation="secondary" type="reset">
           Cancel
         </Button>
-        <Button disabled={isPending}>Add cabin</Button>
+        <Button disabled={isCreating}>Add cabin</Button>
       </FormRow>
     </Form>
   );
