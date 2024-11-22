@@ -48,7 +48,7 @@ export async function createCabin(newCabin) {
   return data;
 }
 
-export async function editCabin(updatedCabin) {
+export async function editCabinAPI(updatedCabin) {
   const { id, image, ...cabinData } = updatedCabin;
   let imagePath = cabinData.image;
   if (image) {
@@ -65,7 +65,7 @@ export async function editCabin(updatedCabin) {
   return data;
 }
 
-export async function deleteCabin(id) {
+export async function deleteCabinApi(id) {
   const { data, error } = await supabase.from("cabins").delete().eq("id", id);
 
   if (error) throw new Error("Error deleteing cabin");
