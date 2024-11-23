@@ -26,7 +26,7 @@ const queryClient = new QueryClient({
     queries: {
       //time it takes for fetched data to be stale and re-fetch
       // staleTime: 60 * 1000,
-      staleTime: 0,
+      staleTime: 1 * 1000,
     },
   },
 });

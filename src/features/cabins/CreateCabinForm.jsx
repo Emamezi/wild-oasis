@@ -31,7 +31,7 @@ function CreateCabinForm({ cabinToEdit = {} }) {
   function onSubmit(data) {
     if (isEditSession) {
       editCabin(
-        { ...data, id: editID, image: data.image[0] },
+        { ...data, id: editID, image: data?.image[0] },
         { onSuccess: () => reset() }
       );
     } else {
