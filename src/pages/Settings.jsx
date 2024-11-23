@@ -1,11 +1,15 @@
+import UpdateSettingsForm from "../features/settings/UpdateSettingsForm";
+import Row from "../ui/Row";
 import Heading from "../ui/Heading";
 
 function Settings() {
   return (
-    <Heading as="h1">
-      Update hotel settings
-      {/* <Row></Row> */}
-    </Heading>
+    <Row>
+      <Heading as="h1">
+        Update hotel settings
+        <UpdateSettingsForm />
+      </Heading>
+    </Row>
   );
 }
 

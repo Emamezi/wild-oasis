@@ -29,13 +29,12 @@ function CreateCabinForm({ cabinToEdit = {} }) {
   const { editCabin, isEditing } = useEditCabin();
 
   function onSubmit(data) {
+    const image = typeof data.image === "string" ? data.image : data.image[0];
     if (isEditSession) {
-      editCabin(
-        { ...data, id: editID, image: data?.image[0] },
-        { onSuccess: () => reset() }
-      );
+      console.log(data);
+      editCabin({ ...data, id: editID, image }, { onSuccess: () => reset() });
     } else {
-      newCabin({ ...data, image: data.image[0] }, { onSuccess: () => reset() });
+      newCabin({ ...data, image: image }, { onSuccess: () => reset() });
     }
   }
 
@@ -59,7 +58,7 @@ function CreateCabinForm({ cabinToEdit = {} }) {
           {...register("maxCapacity", {
             required: "this field is required",
             min: {
-              value: 2,
+              value: 1,
               message: "capacity should be at least 1",
             },
           })}

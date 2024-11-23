@@ -7,7 +7,6 @@ export async function getCabins() {
     .order("created_at", { ascending: true });
 
   if (error) {
-    // console.log(error);
     throw new Error("cabins could not be read");
   }
   return data;
@@ -25,7 +24,6 @@ async function uploadImage(newCabin) {
   const { error: storageError } = await supabase.storage
     .from("cabin-images")
     .upload(imageName, newCabin.image);
-  // console.log(storageError);
 
   if (storageError) throw new Error("Could not upload image. Please try again");
   return { imagePath, storageError };
@@ -40,7 +38,6 @@ export async function createCabin(newCabin) {
       "Cabin image could not be uploaded and cabin could not be created"
     );
   }
-  // console.log(imagePath);
 
   //create cabiin
   const { data, error } = await supabase
@@ -60,18 +57,27 @@ export async function createCabin(newCabin) {
 }
 
 export async function editCabinAPI(updatedCabin) {
-  const { id, image, ...cabinData } = updatedCabin;
-  let imagePath = cabinData.image;
-  if (image) {
-    imagePath = await uploadImage(image);
-  }
+  // const hasImagePath = updatedCabin.image.startsWith(supabaseUrl);
+  // let imagePath = "";
+  // if (!hasImagePath) {
+  //   imagePath = await uploadImage(updatedCabin);
+  // } else {
+  //   imagePath = updatedCabin.image;
+  // }
+  // console.log(imagePath);
+  // console.log(updatedCabin);
+  // console.log(updatedCabin);
+  // const { id, image, ...cabinData } = updatedCabin;
+  // let imagePath = cabinData.image;
+  // if (image) {
+  //   imagePath = await uploadImage(image);
+  // }
 
   const { data, error } = await supabase
     .from("cabins")
-    .update({ ...cabinData, image: imagePath })
-    .eq("id", id)
-    .select();
-
+    .update({ ...updatedCabin, image: imagePath })
+    .eq("id", id);
+  console.log(data);
   return data;
 }
 
