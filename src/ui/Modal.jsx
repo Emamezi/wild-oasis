@@ -1,3 +1,6 @@
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { HiXMark } from "react-icons/hi2";
 import styled from "styled-components";
 
 const StyledModal = styled.div`
@@ -18,8 +21,8 @@ const Overlay = styled.div`
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: var(--backdrop-color);
   backdrop-filter: blur(4px);
+  background-color: var(--backdrop-color);
   z-index: 1000;
   transition: all 0.5s;
 `;
@@ -48,3 +51,58 @@ const Button = styled.button`
     color: var(--color-grey-500);
   }
 `;
+
+const ModalContext = createContext();
+
+function Modal({ children }) {
+  const [openName, setOpenName] = useState(""); //keep track of which window is currently open
+
+  const close = () => setOpenName("");
+  const open = setOpenName;
+
+  return (
+    <ModalContext.Provider value={{ openName, close, open }}>
+      {children}
+    </ModalContext.Provider>
+  );
+}
+
+function Open({ renderButton, opens: opensWindowName }) {
+  const { open } = useContext(ModalContext);
+  return renderButton(() => open(opensWindowName));
+}
+
+function Window({ children, name }) {
+  const ref = useRef();
+
+  const { openName, close } = useContext(ModalContext);
+  useEffect(
+    function () {
+      function handleClick(e) {
+        if (ref.current && !ref.current.contains(e.target)) {
+          console.log("clicked outside");
+          close();
+        }
+      }
+      document.addEventListener("click", handleClick, true);
+      () => document.removeEventListener("click", handleClick(e), true);
+    },
+    [close]
+  );
+  if (name !== openName) return null;
+  return createPortal(
+    <Overlay>
+      <StyledModal ref={ref}>
+        <Button onClick={close}>
+          <HiXMark />
+        </Button>
+        <div>{children}</div>
+      </StyledModal>
+    </Overlay>
+  );
+}
+
+Modal.Open = Open;
+Modal.Window = Window;
+
+export default Modal;
